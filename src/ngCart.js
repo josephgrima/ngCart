@@ -34,7 +34,9 @@ angular.module('ngCart', ['ngCart.directives'])
                 shipping : null,
                 taxRate : null,
                 tax : null,
-                items : []
+                items: [],
+                restaurant: null,
+                extras: []
             };
         };
 
@@ -103,6 +105,43 @@ angular.module('ngCart', ['ngCart.directives'])
             return this.getCart().items;
         };
 
+        // Restaurant Part
+        this.getRestaurant = function() {
+            return this.getcart().restaurant;
+        }
+
+        this.setRestaurant = function(restaurant) {
+            var currentRestaurant = this.getRestaurant();
+            if (!currentRestaurant || currentRestaurant.Id !== restaurant.Id) {
+                this.clearRestaurant();
+                this.getCart().restaurant = restaurant;
+                // Set Extras
+                this.setRestaurantExtras(restaurant);
+            }
+        }
+
+        this.setRestaurantExtras = function(restaurant) {
+            // TODO:
+        }
+
+        this.isRestaurant = function(restaurant) {
+            var restaurant = this.getCart
+        }
+
+        this.clearRestaurant = function() {
+            this.clearExtras();
+            this.empty();
+        }
+
+        this.getExtras = function() {
+            return this.getCart().extras;
+        };
+
+        this.clearExtras = function() {
+            this.getCart().extras = [];
+            $rootScope.$broadcast('ngCart:change', {});
+        }
+        
         this.getTotalItems = function () {
             var count = 0;
             var items = this.getItems();
