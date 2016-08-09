@@ -36,9 +36,42 @@ angular.module('ngCart', ['ngCart.directives'])
                 tax : null,
                 items: [],
                 restaurant: null,
-                extras: []
+                extras: [],
+                place: null,
+                serviceType: null
             };
         };
+
+        this.setServiceType = function(serviceType) {
+            var currentServiceType = this.getServiceType();
+            // Check if Service Type is changing
+            if (!currentServiceType || currentServiceType !== serviceType) {
+                this.getCart().serviceType = serviceType;
+
+                // Broadcast change
+                $rootScope.$broadcast('ngCart:change', {});
+            }
+        }
+
+        this.getServiceType = function() {
+            return this.getCart().serviceType;
+        }
+
+        this.isDelivery = function() {
+            var serviceType = this.getServiceType();
+            if (!serviceType || serviceType.Id === 1) {
+                return true;
+            }
+            return false;
+        }
+        
+        this.setPlace = function(place) {
+            return this.getCart().place;
+        }
+
+        this.getPlace = function() {
+            return this.getCart().place;
+        }
 
         this.addItem = function (id, name, price, quantity, data) {
 
@@ -84,8 +117,8 @@ angular.module('ngCart', ['ngCart.directives'])
             return this.getTaxRate();
         };
 
-        this.getTaxRate = function(){
-            return this.$cart.taxRate
+        this.getTaxRate = function() {
+            return this.$cart.taxRate;
         };
 
         this.getTax = function(){
@@ -123,9 +156,10 @@ angular.module('ngCart', ['ngCart.directives'])
         this.setRestaurantExtras = function(restaurant) {
             // TODO:
         }
-
+        
         this.isRestaurant = function(restaurant) {
-            var restaurant = this.getCart
+            var currentRestaurant = this.getCart().restaurant;
+            return (currentRestaurant && currentRestaurant.Id === restaurant.Id);
         }
 
         this.clearRestaurant = function() {
@@ -133,13 +167,41 @@ angular.module('ngCart', ['ngCart.directives'])
             this.empty();
         }
 
+        this.addExtra = function (order, name, price) {
+            // Check if extra already exists
+            var extras = this.getExtras();
+            var newExtras = [];
+            for (var i = 0; i < extras.length; i++) {
+                var extra = extras[i];
+                if (extra.Name === trim(name)) {
+                    continue;
+                }
+                newExtras.push(extra);
+            }
+
+            var extra = { Name: trim(name), Order: order, Price: price };
+            newExtras.push(extra);
+
+            this.setExtras(newExtras);
+        }
+
         this.getExtras = function() {
             return this.getCart().extras;
         };
 
+        this.setExtras = function(extras) {
+            this.getCart().extras = extras;
+            $rootScope.$broadcast('ngCart:change', {});
+        }
+
         this.clearExtras = function() {
             this.getCart().extras = [];
             $rootScope.$broadcast('ngCart:change', {});
+        }
+
+        this.getExtrasCount = function() {
+            var extras = this.getCart();
+            return (extras && extras.length) ? extras.length : 0;
         }
         
         this.getTotalItems = function () {
@@ -217,7 +279,9 @@ angular.module('ngCart', ['ngCart.directives'])
                 totalCost: this.totalCost(),
                 items: items,
                 restaurant: this.getRestaurant(),
-                extras: this.getExtras()
+                extras: this.getExtras(),
+                place: getPlace(),
+                serviceType: getServiceType
             }
         };
 
@@ -229,6 +293,9 @@ angular.module('ngCart', ['ngCart.directives'])
             _self.$cart.tax = storedCart.tax;
             _self.$cart.restaurant = storedCart.restaurant;
             _self.$cart.extras = storedCart.extras;
+            _self.$cart.serviceType = storedCart.serviceType;
+            _self.$cart.place = storedCart.place;
+
             angular.forEach(storedCart.items, function (item) {
                 _self.$cart.items.push(new ngCartItem(item._id,  item._name, item._price, item._quantity, item._data));
             });
