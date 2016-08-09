@@ -66,7 +66,7 @@ angular.module('ngCart', ['ngCart.directives'])
         }
         
         this.setPlace = function(place) {
-            return this.getCart().place;
+            this.getCart().place = place;
         }
 
         this.getPlace = function() {
@@ -117,8 +117,8 @@ angular.module('ngCart', ['ngCart.directives'])
             return this.getTaxRate();
         };
 
-        this.getTaxRate = function(){
-            return this.$cart.taxRate
+        this.getTaxRate = function() {
+            return this.$cart.taxRate;
         };
 
         this.getTax = function(){

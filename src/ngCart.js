@@ -66,7 +66,7 @@ angular.module('ngCart', ['ngCart.directives'])
         }
         
         this.setPlace = function(place) {
-            return this.getCart().place;
+            this.getCart().place = place;
         }
 
         this.getPlace = function() {
