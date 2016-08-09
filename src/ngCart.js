@@ -107,7 +107,7 @@ angular.module('ngCart', ['ngCart.directives'])
 
         // Restaurant Part
         this.getRestaurant = function() {
-            return this.getcart().restaurant;
+            return this.getCart().restaurant;
         }
 
         this.setRestaurant = function(restaurant) {
@@ -215,7 +215,9 @@ angular.module('ngCart', ['ngCart.directives'])
                 taxRate: this.getTaxRate(),
                 subTotal: this.getSubTotal(),
                 totalCost: this.totalCost(),
-                items:items
+                items: items,
+                restaurant: this.getRestaurant(),
+                extras: this.getExtras()
             }
         };
 
@@ -225,7 +227,8 @@ angular.module('ngCart', ['ngCart.directives'])
             _self.init();
             _self.$cart.shipping = storedCart.shipping;
             _self.$cart.tax = storedCart.tax;
-
+            _self.$cart.restaurant = storedCart.restaurant;
+            _self.$cart.extras = storedCart.extras;
             angular.forEach(storedCart.items, function (item) {
                 _self.$cart.items.push(new ngCartItem(item._id,  item._name, item._price, item._quantity, item._data));
             });
