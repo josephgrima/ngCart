@@ -38,7 +38,9 @@ angular.module('ngCart', ['ngCart.directives'])
                 restaurant: null,
                 extras: [],
                 place: null,
-                serviceType: null
+                serviceType: null,
+                promoCode: null,
+                promo: null
             };
         };
 
@@ -173,13 +175,13 @@ angular.module('ngCart', ['ngCart.directives'])
             var newExtras = [];
             for (var i = 0; i < extras.length; i++) {
                 var extra = extras[i];
-                if (extra.Name === trim(name)) {
+                if (extra.Name === name.trim()) {
                     continue;
                 }
                 newExtras.push(extra);
             }
 
-            var extra = { Name: trim(name), Order: order, Price: price };
+            var extra = { Name: name.trim(), Order: order, Price: price };
             newExtras.push(extra);
 
             this.setExtras(newExtras);
