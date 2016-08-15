@@ -200,6 +200,7 @@ angular.module('ngCart', ['ngCart.directives'])
                     total += currentExtra.Price;
                 }
             }
+            return total;
         }
 
         this.setExtras = function (extras) {
