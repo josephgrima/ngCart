@@ -239,7 +239,7 @@ angular.module('ngCart', ['ngCart.directives'])
         };
 
         this.totalCost = function () {
-            return +parseFloat(this.getSubTotal() + this.getShipping() + getExtrasTotal().toFixed(2) + this.getTax()).toFixed(2);
+            return +parseFloat(this.getSubTotal() + this.getShipping() + this.getExtrasTotal().toFixed(2) + this.getTax()).toFixed(2);
         };
 
         this.removeItem = function (index) {
