@@ -40,7 +40,8 @@ angular.module('ngCart', ['ngCart.directives'])
                 place: null,
                 serviceType: null,
                 promoCode: null,
-                promo: null
+                promo: null,
+                serverSideShoppingCart: null,
             };
         };
 
@@ -152,6 +153,8 @@ angular.module('ngCart', ['ngCart.directives'])
                 this.getCart().restaurant = restaurant;
                 // Set Extras
                 this.setRestaurantExtras(restaurant);
+                $rootScope.$broadcast('ngCart:changeRestaurant', {});
+                $rootScope.$broadcast('ngCart:change', {});
             }
         }
 
@@ -165,8 +168,10 @@ angular.module('ngCart', ['ngCart.directives'])
         }
 
         this.clearRestaurant = function () {
+            this.clearServerSideShoppingCart();
             this.clearExtras();
             this.empty();
+            $rootScope.$broadcast('ngCart:changeRestaurant', {});
         }
 
         this.addExtra = function (order, name, price) {
@@ -205,11 +210,13 @@ angular.module('ngCart', ['ngCart.directives'])
 
         this.setExtras = function (extras) {
             this.getCart().extras = extras;
+            $rootScope.$broadcast('ngCart:changeExtras', {});
             $rootScope.$broadcast('ngCart:change', {});
         }
 
         this.clearExtras = function () {
             this.getCart().extras = [];
+            $rootScope.$broadcast('ngCart:changeExtras', {});
             $rootScope.$broadcast('ngCart:change', {});
         }
 
@@ -264,17 +271,30 @@ angular.module('ngCart', ['ngCart.directives'])
         };
 
         this.empty = function () {
-
-            $rootScope.$broadcast('ngCart:change', {});
             this.$cart.items = [];
             $window.localStorage.removeItem('cart');
+            $rootScope.$broadcast('ngCart:change', {});
         };
 
         this.isEmpty = function () {
-
             return (this.$cart.items.length > 0 ? false : true);
-
         };
+
+        this.setServerSideShoppingCart = function(shoppingCart) {
+            this.$cart.serverSideShoppingCart = shoppingCart;
+            $rootScope.$broadcast('ngCart:shoppingCartChange', {});
+            $rootScope.$broadcast('ngCart:change', {});
+        }
+
+        this.clearServerSideShoppingCart = function() {
+            this.$cart.serverSideShoppingCart = null;
+            $rootScope.$broadcast('ngCart:shoppingCartChange', {});
+            $rootScope.$broadcast('ngCart:change', {});
+        }
+
+        this.getServerSideShoppingCart = function() {
+            return this.$cart.serverSideShoppingCart;
+        }
 
         this.toObject = function () {
 
@@ -295,7 +315,8 @@ angular.module('ngCart', ['ngCart.directives'])
                 restaurant: this.getRestaurant(),
                 extras: this.getExtras(),
                 place: getPlace(),
-                serviceType: getServiceType
+                serviceType: getServiceType,
+                serverSideShoppingCart: getServerSideShoppingCart()
             }
         };
 
@@ -309,6 +330,7 @@ angular.module('ngCart', ['ngCart.directives'])
             _self.$cart.extras = storedCart.extras;
             _self.$cart.serviceType = storedCart.serviceType;
             _self.$cart.place = storedCart.place;
+            _self.$cart.serverSideShoppingCart = storedCart.serverSideShoppingCart;
 
             angular.forEach(storedCart.items, function (item) {
                 _self.$cart.items.push(new ngCartItem(item._id, item._name, item._price, item._quantity, item._data));
